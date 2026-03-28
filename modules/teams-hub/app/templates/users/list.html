@@ -1,0 +1,79 @@
+{% extends "admin/_base.html" %}
+{% block title %}Users — {{ app_name }}{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Total</div><div class="stat-icon"><i class="fas fa-users"></i></div></div>
+        <div class="stat-value">{{ stats.total }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Active</div><div class="stat-icon"><i class="fas fa-user-check"></i></div></div>
+        <div class="stat-value">{{ stats.active }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Platform Admins</div><div class="stat-icon"><i class="fas fa-shield-alt"></i></div></div>
+        <div class="stat-value">{{ stats.platform_admins }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">GUI Admins</div><div class="stat-icon"><i class="fas fa-user-shield"></i></div></div>
+        <div class="stat-value">{{ stats.gui_admins }}</div>
+    </div>
+</div>
+
+<div class="d-flex justify-between align-center mb-3">
+    <form class="search-bar" method="GET">
+        <input type="text" name="q" class="form-control" placeholder="Search users..." value="{{ search }}">
+        <select name="role" class="form-control" style="max-width:160px;">
+            <option value="">All Roles</option>
+            <option value="platform_admin" {% if role_filter == 'platform_admin' %}selected{% endif %}>Platform Admin</option>
+            <option value="gui_admin" {% if role_filter == 'gui_admin' %}selected{% endif %}>GUI Admin</option>
+            <option value="end_user" {% if role_filter == 'end_user' %}selected{% endif %}>End User</option>
+        </select>
+        <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i></button>
+    </form>
+    <a href="{{ url_for('users.create_user') }}" class="btn btn-primary"><i class="fas fa-user-plus"></i> Create User</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if users %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><a href="{{ url_for('users.user_detail', user_id=user.id) }}">{{ user.username }}</a></td>
+                        <td>{{ user.full_name }}</td>
+                        <td class="text-muted">{{ user.email }}</td>
+                        <td><span class="badge {% if user.is_platform_admin %}badge-danger{% elif user.is_gui_admin %}badge-warning{% else %}badge-secondary{% endif %}">{{ user.role.value | replace('_', ' ') | title }}</span></td>
+                        <td>{% if user.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-danger">Inactive</span>{% endif %}</td>
+                        <td class="text-muted">{{ user.last_login_at | timeago }}</td>
+                        <td>
+                            <a href="{{ url_for('users.edit_user', user_id=user.id) }}" class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pages > 1 %}
+        <div class="pagination">
+            {% for p in range(1, pages + 1) %}
+            <a href="?page={{ p }}&q={{ search }}&role={{ role_filter }}" class="{% if p == page %}active{% endif %}">{{ p }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <p>No users found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

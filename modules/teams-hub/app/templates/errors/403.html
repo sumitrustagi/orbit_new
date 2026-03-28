@@ -1,0 +1,11 @@
+{% extends "admin/_base.html" %}
+{% block title %}403 Forbidden — {{ app_name }}{% endblock %}
+{% block page_title %}Access Denied{% endblock %}
+{% block content %}
+<div class="empty-state">
+    <i class="fas fa-ban text-danger"></i>
+    <h2>403 — Forbidden</h2>
+    <p>You do not have permission to access this resource.</p>
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary mt-3"><i class="fas fa-home"></i> Go to Dashboard</a>
+</div>
+{% endblock %}

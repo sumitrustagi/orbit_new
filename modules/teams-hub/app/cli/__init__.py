@@ -1,0 +1,1 @@
+"""Teams Hub — CLI commands."""

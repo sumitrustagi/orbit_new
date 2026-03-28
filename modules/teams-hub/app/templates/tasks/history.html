@@ -1,0 +1,42 @@
+{% extends "admin/_base.html" %}
+{% block title %}Task History — {{ app_name }}{% endblock %}
+{% block page_title %}Task Execution History{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-between align-center mb-3">
+    <a href="{{ url_for('tasks.monitor') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Monitor</a>
+    <span class="text-muted">{{ total }} entries</span>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if items %}
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Time</th><th>Action</th><th>Resource</th><th>Status</th><th>Detail</th></tr></thead>
+                <tbody>
+                    {% for log in items %}
+                    <tr>
+                        <td class="text-muted">{{ log.timestamp | fmt_dt('%d %b %H:%M:%S') }}</td>
+                        <td><span class="badge badge-info">{{ log.action }}</span></td>
+                        <td>{{ log.resource_type or '' }} {{ log.resource_name or '' }}</td>
+                        <td>{% if log.status == 'success' %}<span class="badge badge-success">OK</span>{% else %}<span class="badge badge-danger">{{ log.status }}</span>{% endif %}</td>
+                        <td class="text-muted" style="font-size:0.8rem;">{{ log.status_detail or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pages > 1 %}
+        <div class="pagination">
+            {% for p in range(1, pages + 1) %}
+            <a href="?page={{ p }}" class="{% if p == page %}active{% endif %}">{{ p }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state"><i class="fas fa-history"></i><p>No task execution history.</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

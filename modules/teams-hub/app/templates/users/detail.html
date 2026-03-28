@@ -1,0 +1,95 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ user.full_name }} — {{ app_name }}{% endblock %}
+{% block page_title %}{{ user.full_name }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <span><i class="fas fa-user"></i> User Details</span>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('users.edit_user', user_id=user.id) }}" class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i> Edit</a>
+            <form method="POST" action="{{ url_for('users.toggle_user', user_id=user.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm {% if user.is_active %}btn-warning{% else %}btn-success{% endif %}">
+                    <i class="fas {% if user.is_active %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
+                    {% if user.is_active %}Deactivate{% else %}Activate{% endif %}
+                </button>
+            </form>
+            <form method="POST" action="{{ url_for('users.delete_user', user_id=user.id) }}" onsubmit="return confirm('Delete this user?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Delete</button>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+            <div class="stat-card"><div class="stat-label">Username</div><div style="font-weight:600;">{{ user.username }}</div></div>
+            <div class="stat-card"><div class="stat-label">Email</div><div>{{ user.email }}</div></div>
+            <div class="stat-card"><div class="stat-label">Role</div><span class="badge {% if user.is_platform_admin %}badge-danger{% elif user.is_gui_admin %}badge-warning{% else %}badge-secondary{% endif %}">{{ user.role.value | replace('_', ' ') | title }}</span></div>
+            <div class="stat-card"><div class="stat-label">Status</div>{% if user.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-danger">Inactive</span>{% endif %}</div>
+            <div class="stat-card"><div class="stat-label">Auth Provider</div><span class="badge badge-info">{{ user.auth_provider.value }}</span></div>
+            <div class="stat-card"><div class="stat-label">Last Login</div><div class="text-muted">{{ user.last_login_at | timeago }}</div></div>
+        </div>
+
+        {% if user.ms_user_id %}
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border-color);">
+            <h4 style="font-size:0.9rem; margin-bottom:8px;">Microsoft 365</h4>
+            <div class="text-muted" style="font-size:0.85rem;">
+                UPN: {{ user.ms_upn or '—' }} &bull;
+                Phone: {{ user.ms_phone_number or '—' }} &bull;
+                Location: {{ user.ms_location or '—' }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if user.notes %}
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border-color);">
+            <h4 style="font-size:0.9rem; margin-bottom:8px;">Notes</h4>
+            <p class="text-muted">{{ user.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Password Reset -->
+<div class="card mb-4" style="max-width:400px;">
+    <div class="card-header"><i class="fas fa-key"></i> Reset Password</div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('users.change_password', user_id=user.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label>New Password (min 8 chars)</label>
+                <input type="password" name="new_password" class="form-control" minlength="8" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-key"></i> Reset Password</button>
+        </form>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header"><i class="fas fa-clipboard-list"></i> Recent Activity</div>
+    <div class="card-body">
+        {% if recent_audit %}
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Action</th><th>Resource</th><th>Status</th><th>IP</th><th>Time</th></tr></thead>
+                <tbody>
+                    {% for log in recent_audit %}
+                    <tr>
+                        <td><span class="badge badge-info">{{ log.action }}</span></td>
+                        <td>{{ log.resource_type or '—' }} {{ log.resource_name or '' }}</td>
+                        <td>{% if log.status == 'success' %}<span class="badge badge-success">OK</span>{% else %}<span class="badge badge-danger">{{ log.status }}</span>{% endif %}</td>
+                        <td class="text-muted">{{ log.ip_address or '—' }}</td>
+                        <td class="text-muted">{{ log.timestamp | timeago }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><p>No recent activity.</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

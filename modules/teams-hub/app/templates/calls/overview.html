@@ -1,0 +1,43 @@
+{% extends "admin/_base.html" %}
+{% block title %}Call Management — {{ app_name }}{% endblock %}
+{% block page_title %}Call Management{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Call Queues</div><div class="stat-icon"><i class="fas fa-phone-alt"></i></div></div>
+        <div class="stat-value">{{ stats.total_queues }}</div>
+        <div class="text-muted mt-1">{{ stats.active_queues }} active</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Auto Attendants</div><div class="stat-icon"><i class="fas fa-robot"></i></div></div>
+        <div class="stat-value">{{ stats.total_attendants }}</div>
+        <div class="text-muted mt-1">{{ stats.active_attendants }} active</div>
+    </div>
+</div>
+
+<div class="d-flex gap-2 mb-4">
+    <a href="{{ url_for('calls.list_queues') }}" class="btn btn-secondary"><i class="fas fa-phone-alt"></i> View Call Queues</a>
+    <a href="{{ url_for('calls.list_auto_attendants') }}" class="btn btn-secondary"><i class="fas fa-robot"></i> View Auto Attendants</a>
+    <form method="POST" action="{{ url_for('calls.sync_calls') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-sync"></i> Sync from Microsoft 365</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header"><i class="fas fa-info-circle"></i> About Call Management</div>
+    <div class="card-body">
+        <p class="text-muted">
+            Manage Microsoft Teams Phone System resources including Call Queues and Auto Attendants.
+            Use the Sync button to pull the latest data from your Microsoft 365 tenant.
+        </p>
+        <p class="text-muted mt-2">
+            <strong>Call Queues</strong> route incoming calls to a group of agents using configurable routing methods.
+        </p>
+        <p class="text-muted mt-2">
+            <strong>Auto Attendants</strong> provide an automated menu system for callers to navigate to the right department.
+        </p>
+    </div>
+</div>
+{% endblock %}

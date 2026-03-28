@@ -1,0 +1,114 @@
+{% extends "admin/_base.html" %}
+{% block title %}Dashboard — {{ app_name }}{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+        </div>
+        <div class="stat-value">{{ stats.total_users }}</div>
+        <div class="text-muted mt-1">{{ stats.active_users }} active</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-label">Teams</div>
+            <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+        </div>
+        <div class="stat-value">{{ stats.total_teams }}</div>
+        <div class="text-muted mt-1">{{ stats.archived_teams }} archived</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-label">Channels</div>
+            <div class="stat-icon"><i class="fas fa-hashtag"></i></div>
+        </div>
+        <div class="stat-value">{{ stats.total_channels }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-label">Meetings</div>
+            <div class="stat-icon"><i class="fas fa-video"></i></div>
+        </div>
+        <div class="stat-value">{{ stats.total_meetings }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-label">Call Queues</div>
+            <div class="stat-icon"><i class="fas fa-phone-alt"></i></div>
+        </div>
+        <div class="stat-value">{{ stats.total_call_queues }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div class="stat-label">Auto Attendants</div>
+            <div class="stat-icon"><i class="fas fa-robot"></i></div>
+        </div>
+        <div class="stat-value">{{ stats.total_auto_attendants }}</div>
+    </div>
+</div>
+
+<!-- Recent Teams -->
+<div class="card">
+    <div class="card-header">
+        <span><i class="fas fa-layer-group"></i> Recent Teams</span>
+        <a href="{{ url_for('teams.list_teams') }}" class="btn btn-sm btn-secondary">View All</a>
+    </div>
+    <div class="card-body">
+        {% if recent_teams %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Visibility</th>
+                        <th>Members</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in recent_teams %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('teams.team_detail', team_id=team.id) }}">
+                                {{ team.display_name }}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="badge {% if team.visibility == 'public' %}badge-info{% else %}badge-secondary{% endif %}">
+                                {{ team.visibility }}
+                            </span>
+                        </td>
+                        <td>{{ team.member_count }}</td>
+                        <td>
+                            {% if team.is_archived %}
+                                <span class="badge badge-warning">Archived</span>
+                            {% else %}
+                                <span class="badge badge-success">Active</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted">{{ team.created_at | timeago }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-layer-group"></i>
+            <p>No teams synced yet. Sync teams from Microsoft 365 to get started.</p>
+            <form method="POST" action="{{ url_for('teams.sync_all_teams') }}" style="margin-top: 16px;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sync"></i> Sync Teams Now
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

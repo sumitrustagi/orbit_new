@@ -1,0 +1,98 @@
+{% extends "admin/_base.html" %}
+{% block title %}Task Monitor — {{ app_name }}{% endblock %}
+{% block page_title %}Task Monitor{% endblock %}
+
+{% block content %}
+<!-- Worker Status -->
+<div class="card mb-4">
+    <div class="card-header">
+        <span><i class="fas fa-server"></i> Celery Workers</span>
+        <button class="btn btn-sm btn-secondary" onclick="refreshWorkers()"><i class="fas fa-sync"></i> Refresh</button>
+    </div>
+    <div class="card-body" id="worker-status">
+        <div class="text-muted">Loading worker status...</div>
+    </div>
+</div>
+
+<!-- Triggerable Tasks -->
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-play-circle"></i> Manual Task Triggers</div>
+    <div class="card-body">
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+            {% for name, task in triggerable.items() %}
+            <div class="stat-card">
+                <div class="stat-label">{{ task.label }}</div>
+                <div class="text-muted" style="font-size:0.75rem; margin: 4px 0;">Queue: {{ task.queue }}</div>
+                <form method="POST" action="{{ url_for('tasks.trigger_task', name=name) }}" style="margin-top:8px;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-play"></i> Run Now</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Task Executions -->
+<div class="card">
+    <div class="card-header">
+        <span><i class="fas fa-history"></i> Recent Task Executions</span>
+        <a href="{{ url_for('tasks.history') }}" class="btn btn-sm btn-secondary">View History</a>
+    </div>
+    <div class="card-body" id="recent-tasks">
+        <div class="text-muted">Loading recent tasks...</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function refreshWorkers() {
+    fetch('{{ url_for("tasks.api_status") }}')
+        .then(r => r.json())
+        .then(data => {
+            const el = document.getElementById('worker-status');
+            if (!data.ok || data.worker_count === 0) {
+                el.innerHTML = '<div class="text-muted">No workers connected. Is Celery running?</div>';
+                return;
+            }
+            let html = '<div class="table-container"><table><thead><tr><th>Worker</th><th>Active</th><th>Reserved</th><th>Pool Size</th></tr></thead><tbody>';
+            data.workers.forEach(w => {
+                html += `<tr><td>${w.name}</td><td>${w.active}</td><td>${w.reserved}</td><td>${w.pool_size}</td></tr>`;
+            });
+            html += '</tbody></table></div>';
+            el.innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('worker-status').innerHTML = '<div class="text-muted">Unable to fetch worker status.</div>';
+        });
+}
+
+function loadRecentTasks() {
+    fetch('{{ url_for("tasks.api_recent") }}')
+        .then(r => r.json())
+        .then(data => {
+            const el = document.getElementById('recent-tasks');
+            if (data.length === 0) {
+                el.innerHTML = '<div class="text-muted">No recent task executions.</div>';
+                return;
+            }
+            let html = '<div class="table-container"><table><thead><tr><th>Action</th><th>Resource</th><th>Status</th><th>Time</th></tr></thead><tbody>';
+            data.forEach(t => {
+                const badge = t.status === 'success' ? 'badge-success' : 'badge-danger';
+                html += `<tr><td><span class="badge badge-info">${t.action}</span></td><td>${t.resource_name || t.resource_type}</td><td><span class="badge ${badge}">${t.status}</span></td><td class="text-muted">${t.created_at}</td></tr>`;
+            });
+            html += '</tbody></table></div>';
+            el.innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('recent-tasks').innerHTML = '<div class="text-muted">Unable to fetch recent tasks.</div>';
+        });
+}
+
+refreshWorkers();
+loadRecentTasks();
+setInterval(refreshWorkers, 15000);
+setInterval(loadRecentTasks, 15000);
+</script>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "admin/_base.html" %}
+{% block title %}Teams — {{ app_name }}{% endblock %}
+{% block page_title %}Teams & Channels{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Total</div><div class="stat-icon"><i class="fas fa-layer-group"></i></div></div>
+        <div class="stat-value">{{ stats.total }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Active</div><div class="stat-icon"><i class="fas fa-check-circle"></i></div></div>
+        <div class="stat-value">{{ stats.active }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Archived</div><div class="stat-icon"><i class="fas fa-archive"></i></div></div>
+        <div class="stat-value">{{ stats.archived }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Public</div><div class="stat-icon"><i class="fas fa-globe"></i></div></div>
+        <div class="stat-value">{{ stats.public }}</div>
+    </div>
+</div>
+
+<!-- Actions bar -->
+<div class="d-flex justify-between align-center mb-3">
+    <form class="search-bar" method="GET">
+        <input type="text" name="q" class="form-control" placeholder="Search teams..." value="{{ search }}">
+        <select name="visibility" class="form-control" style="max-width:140px;">
+            <option value="">All</option>
+            <option value="public" {% if visibility_filter == 'public' %}selected{% endif %}>Public</option>
+            <option value="private" {% if visibility_filter == 'private' %}selected{% endif %}>Private</option>
+        </select>
+        <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i></button>
+    </form>
+    <div class="d-flex gap-2">
+        <form method="POST" action="{{ url_for('teams.sync_all_teams') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-secondary"><i class="fas fa-sync"></i> Sync</button>
+        </form>
+        <a href="{{ url_for('teams.create_team') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Create Team</a>
+    </div>
+</div>
+
+<!-- Teams Table -->
+<div class="card">
+    <div class="card-body">
+        {% if teams %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Visibility</th>
+                        <th>Members</th>
+                        <th>Status</th>
+                        <th>Last Synced</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in teams %}
+                    <tr>
+                        <td><a href="{{ url_for('teams.team_detail', team_id=team.id) }}">{{ team.display_name }}</a></td>
+                        <td class="text-muted">{{ (team.description or '')[:60] }}{% if team.description and team.description|length > 60 %}...{% endif %}</td>
+                        <td><span class="badge {% if team.visibility == 'public' %}badge-info{% else %}badge-secondary{% endif %}">{{ team.visibility }}</span></td>
+                        <td>{{ team.member_count }}</td>
+                        <td>
+                            {% if team.is_archived %}<span class="badge badge-warning">Archived</span>
+                            {% else %}<span class="badge badge-success">Active</span>{% endif %}
+                        </td>
+                        <td class="text-muted">{{ team.last_synced_at | timeago }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pages > 1 %}
+        <div class="pagination">
+            {% for p in range(1, pages + 1) %}
+            <a href="?page={{ p }}&q={{ search }}&visibility={{ visibility_filter }}" class="{% if p == page %}active{% endif %}">{{ p }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-layer-group"></i>
+            <p>No teams found. Sync from Microsoft 365 or create a new team.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

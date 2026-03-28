@@ -1,0 +1,11 @@
+{% extends "admin/_base.html" %}
+{% block title %}429 Too Many Requests — {{ app_name }}{% endblock %}
+{% block page_title %}Rate Limited{% endblock %}
+{% block content %}
+<div class="empty-state">
+    <i class="fas fa-hourglass-half text-warning"></i>
+    <h2>429 — Too Many Requests</h2>
+    <p>You've been rate limited. Please wait a moment and try again.</p>
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary mt-3"><i class="fas fa-home"></i> Go to Dashboard</a>
+</div>
+{% endblock %}

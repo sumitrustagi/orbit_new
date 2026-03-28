@@ -1,0 +1,105 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ team.display_name }} — {{ app_name }}{% endblock %}
+{% block page_title %}{{ team.display_name }}{% endblock %}
+
+{% block content %}
+<!-- Team info card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <span><i class="fas fa-layer-group"></i> Team Details</span>
+        <div class="d-flex gap-2">
+            {% if team.is_archived %}
+            <form method="POST" action="{{ url_for('teams.unarchive_team', team_id=team.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-box-open"></i> Unarchive</button>
+            </form>
+            {% else %}
+            <form method="POST" action="{{ url_for('teams.archive_team', team_id=team.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-warning"><i class="fas fa-archive"></i> Archive</button>
+            </form>
+            {% endif %}
+            <form method="POST" action="{{ url_for('teams.delete_team', team_id=team.id) }}" onsubmit="return confirm('Delete this team permanently?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Delete</button>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Visibility</div>
+                <span class="badge {% if team.visibility == 'public' %}badge-info{% else %}badge-secondary{% endif %}">{{ team.visibility }}</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Status</div>
+                {% if team.is_archived %}<span class="badge badge-warning">Archived</span>{% else %}<span class="badge badge-success">Active</span>{% endif %}
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Members</div>
+                <div class="stat-value">{{ team.member_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Owners</div>
+                <div class="stat-value">{{ team.owner_count }}</div>
+            </div>
+        </div>
+        {% if team.description %}
+        <p style="margin-top: 12px; color: var(--text-secondary);">{{ team.description }}</p>
+        {% endif %}
+        <div class="text-muted mt-2" style="font-size: 0.8rem;">
+            MS Team ID: {{ team.ms_team_id | truncate_id(16) }} &bull;
+            Last synced: {{ team.last_synced_at | timeago }} &bull;
+            Created: {{ team.created_at | fmt_dt }}
+        </div>
+    </div>
+</div>
+
+<!-- Channels -->
+<div class="card">
+    <div class="card-header">
+        <span><i class="fas fa-hashtag"></i> Channels ({{ channels | length }})</span>
+    </div>
+    <div class="card-body">
+        {% if channels %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Name</th><th>Type</th><th>Description</th><th>Synced</th></tr>
+                </thead>
+                <tbody>
+                    {% for ch in channels %}
+                    <tr>
+                        <td>
+                            {% if ch.is_general %}<i class="fas fa-star text-warning" style="margin-right:4px;"></i>{% endif %}
+                            {{ ch.display_name }}
+                        </td>
+                        <td><span class="badge badge-secondary">{{ ch.membership_type }}</span></td>
+                        <td class="text-muted">{{ (ch.description or '')[:50] }}</td>
+                        <td class="text-muted">{{ ch.last_synced_at | timeago }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-hashtag"></i>
+            <p>No channels found.</p>
+        </div>
+        {% endif %}
+
+        <!-- Create channel form -->
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: 12px; font-size: 0.95rem;">Create Channel</h4>
+            <form method="POST" action="{{ url_for('teams.create_channel', team_id=team.id) }}" class="d-flex gap-2 align-center" style="flex-wrap: wrap;">
+                {{ form.hidden_tag() }}
+                {{ form.display_name(class="form-control", style="max-width:220px;", placeholder="Channel name") }}
+                {{ form.description(class="form-control", style="max-width:240px; min-height:auto;", placeholder="Description", rows="1") }}
+                {{ form.membership_type(class="form-control", style="max-width:130px;") }}
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

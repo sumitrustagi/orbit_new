@@ -1,0 +1,65 @@
+<!-- Sidebar Navigation -->
+<nav class="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-comments"></i>
+        {{ app_name }}
+    </div>
+
+    <div class="sidebar-nav">
+        <!-- Main -->
+        <div class="sidebar-section">Main</div>
+        <a href="{{ url_for('dashboard.index') }}" class="sidebar-link {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+
+        <!-- Teams & Channels -->
+        <div class="sidebar-section">Teams</div>
+        <a href="{{ url_for('teams.list_teams') }}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('teams.') %}active{% endif %}">
+            <i class="fas fa-users"></i> Teams & Channels
+        </a>
+
+        <!-- Meetings -->
+        <div class="sidebar-section">Communication</div>
+        <a href="{{ url_for('meetings.list_meetings') }}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('meetings.') %}active{% endif %}">
+            <i class="fas fa-video"></i> Meetings
+        </a>
+        <a href="{{ url_for('calls.overview') }}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('calls.') %}active{% endif %}">
+            <i class="fas fa-phone-alt"></i> Call Management
+        </a>
+
+        <!-- Admin -->
+        {% if current_user.is_authenticated and (current_user.is_platform_admin or current_user.is_gui_admin) %}
+        <div class="sidebar-section">Administration</div>
+        <a href="{{ url_for('users.list_users') }}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('users.') %}active{% endif %}">
+            <i class="fas fa-user-cog"></i> User Management
+        </a>
+        {% endif %}
+
+        {% if current_user.is_authenticated and current_user.is_platform_admin %}
+        <div class="sidebar-section">System</div>
+        <a href="{{ url_for('settings.general') }}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('settings.') %}active{% endif %}">
+            <i class="fas fa-cog"></i> Settings
+        </a>
+        <a href="{{ url_for('tasks.monitor') }}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('tasks.') %}active{% endif %}">
+            <i class="fas fa-tasks"></i> Task Monitor
+        </a>
+        <a href="{{ url_for('audit.list_logs') }}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('audit.') %}active{% endif %}">
+            <i class="fas fa-clipboard-list"></i> Audit Logs
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="sidebar-footer">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('users.self_change_password') }}" class="sidebar-link">
+            <i class="fas fa-key"></i> Change Password
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="sidebar-link">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+        </a>
+        {% endif %}
+        <div style="padding: 8px 16px; font-size: 0.7rem; color: var(--text-muted);">
+            {{ app_name }} v{{ app_version }}
+        </div>
+    </div>
+</nav>

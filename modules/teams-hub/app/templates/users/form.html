@@ -1,0 +1,59 @@
+{% extends "admin/_base.html" %}
+{% block title %}{% if action == 'create' %}Create User{% else %}Edit {{ user.username }}{% endif %} — {{ app_name }}{% endblock %}
+{% block page_title %}{% if action == 'create' %}Create User{% else %}Edit User{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><i class="fas fa-{% if action == 'create' %}user-plus{% else %}edit{% endif %}"></i> {% if action == 'create' %}Create New User{% else %}Edit {{ user.username }}{% endif %}</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {% if action == 'create' %}
+            <div class="form-group">
+                <label>{{ form.username.label.text }}</label>
+                {{ form.username(class="form-control") }}
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <label>{{ form.email.label.text }}</label>
+                {{ form.email(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.first_name.label.text }}</label>
+                {{ form.first_name(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.last_name.label.text }}</label>
+                {{ form.last_name(class="form-control") }}
+            </div>
+            {% if action == 'create' %}
+            <div class="form-group">
+                <label>{{ form.password.label.text }}</label>
+                {{ form.password(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.confirm.label.text }}</label>
+                {{ form.confirm(class="form-control") }}
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <label>{{ form.role.label.text }}</label>
+                {{ form.role(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label style="display:inline-flex; align-items:center; gap:6px;">
+                    {{ form.is_active() }} Active
+                </label>
+            </div>
+            <div class="form-group">
+                <label>{{ form.notes.label.text }}</label>
+                {{ form.notes(class="form-control") }}
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+                <a href="{{ url_for('users.list_users') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

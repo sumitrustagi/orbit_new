@@ -1,0 +1,41 @@
+{% extends "admin/_base.html" %}
+{% block title %}Settings — {{ app_name }}{% endblock %}
+{% block page_title %}General Settings{% endblock %}
+
+{% block content %}
+<div class="d-flex gap-2 mb-4">
+    <a href="{{ url_for('settings.general') }}" class="btn btn-primary btn-sm"><i class="fas fa-cog"></i> General</a>
+    <a href="{{ url_for('settings.graph') }}" class="btn btn-secondary btn-sm"><i class="fas fa-project-diagram"></i> Graph API</a>
+    <a href="{{ url_for('settings.email') }}" class="btn btn-secondary btn-sm"><i class="fas fa-envelope"></i> Email</a>
+    <a href="{{ url_for('settings.security') }}" class="btn btn-secondary btn-sm"><i class="fas fa-shield-alt"></i> Security</a>
+    <a href="{{ url_for('settings.env_viewer') }}" class="btn btn-secondary btn-sm"><i class="fas fa-terminal"></i> Environment</a>
+</div>
+
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><i class="fas fa-cog"></i> General</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>{{ form.app_name.label.text }}</label>
+                {{ form.app_name(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.primary_color.label.text }}</label>
+                <div class="d-flex gap-2 align-center">
+                    {{ form.primary_color(class="form-control", style="max-width:200px;") }}
+                    <input type="color" value="{{ form.primary_color.data }}" onchange="this.previousElementSibling.value=this.value" style="width:40px;height:38px;border:none;cursor:pointer;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>{{ form.accent_color.label.text }}</label>
+                <div class="d-flex gap-2 align-center">
+                    {{ form.accent_color(class="form-control", style="max-width:200px;") }}
+                    <input type="color" value="{{ form.accent_color.data }}" onchange="this.previousElementSibling.value=this.value" style="width:40px;height:38px;border:none;cursor:pointer;">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

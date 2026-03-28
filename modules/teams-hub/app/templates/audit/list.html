@@ -1,0 +1,73 @@
+{% extends "admin/_base.html" %}
+{% block title %}Audit Logs — {{ app_name }}{% endblock %}
+{% block page_title %}Audit Logs{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-between align-center mb-3">
+    <form class="search-bar" method="GET">
+        <select name="action" class="form-control" style="max-width:180px;">
+            <option value="">All Actions</option>
+            {% for a in actions %}
+            <option value="{{ a }}" {% if action == a %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="username" class="form-control" placeholder="Username..." value="{{ username_filter }}" style="max-width:180px;">
+        <button type="submit" class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+    </form>
+    <span class="text-muted">{{ total }} entries</span>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if items %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Resource</th>
+                        <th>Status</th>
+                        <th>IP</th>
+                        <th>HTTP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in items %}
+                    <tr>
+                        <td class="text-muted" style="white-space:nowrap;">{{ log.timestamp | fmt_dt('%d %b %H:%M:%S') }}</td>
+                        <td>{{ log.username or '—' }}</td>
+                        <td><span class="badge badge-info">{{ log.action }}</span></td>
+                        <td>
+                            {{ log.resource_type or '' }}
+                            {% if log.resource_name %}<span class="text-muted">{{ log.resource_name }}</span>{% endif %}
+                        </td>
+                        <td>
+                            {% if log.status == 'success' %}<span class="badge badge-success">OK</span>
+                            {% elif log.status == 'failure' %}<span class="badge badge-danger">FAIL</span>
+                            {% else %}<span class="badge badge-secondary">{{ log.status }}</span>{% endif %}
+                        </td>
+                        <td class="text-muted" style="font-size:0.8rem;">{{ log.ip_address or '—' }}</td>
+                        <td class="text-muted" style="font-size:0.8rem;">{{ log.http_method or '' }} {{ (log.http_path or '')[:30] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pages > 1 %}
+        <div class="pagination">
+            {% for p in range(1, pages + 1) %}
+            <a href="?page={{ p }}&action={{ action }}&username={{ username_filter }}" class="{% if p == page %}active{% endif %}">{{ p }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <p>No audit log entries found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

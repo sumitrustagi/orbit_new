@@ -1,0 +1,69 @@
+{% extends "admin/_base.html" %}
+{% block title %}Meetings — {{ app_name }}{% endblock %}
+{% block page_title %}Meetings{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Total</div><div class="stat-icon"><i class="fas fa-video"></i></div></div>
+        <div class="stat-value">{{ stats.total }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Scheduled</div><div class="stat-icon"><i class="fas fa-calendar"></i></div></div>
+        <div class="stat-value">{{ stats.scheduled }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-label">Recurring</div><div class="stat-icon"><i class="fas fa-redo"></i></div></div>
+        <div class="stat-value">{{ stats.recurring }}</div>
+    </div>
+</div>
+
+<div class="d-flex justify-between align-center mb-3">
+    <form class="search-bar" method="GET">
+        <input type="text" name="q" class="form-control" placeholder="Search meetings..." value="{{ search }}">
+        <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i></button>
+    </form>
+    <a href="{{ url_for('meetings.create_meeting') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Create Meeting</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if meetings %}
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Subject</th><th>Organizer</th><th>Start</th><th>End</th><th>Type</th><th>Status</th><th>Participants</th></tr></thead>
+                <tbody>
+                    {% for m in meetings %}
+                    <tr>
+                        <td>{{ m.subject or '(No subject)' }}</td>
+                        <td>{{ m.organizer_name or '—' }}</td>
+                        <td class="text-muted">{{ m.start_time | fmt_dt if m.start_time else '—' }}</td>
+                        <td class="text-muted">{{ m.end_time | fmt_dt if m.end_time else '—' }}</td>
+                        <td><span class="badge badge-info">{{ m.meeting_type or 'scheduled' }}</span></td>
+                        <td>
+                            {% if m.status == 'scheduled' %}<span class="badge badge-success">Scheduled</span>
+                            {% elif m.status == 'completed' %}<span class="badge badge-secondary">Completed</span>
+                            {% else %}<span class="badge badge-info">{{ m.status }}</span>{% endif %}
+                        </td>
+                        <td>{{ m.participant_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pages > 1 %}
+        <div class="pagination">
+            {% for p in range(1, pages + 1) %}
+            <a href="?page={{ p }}&q={{ search }}" class="{% if p == page %}active{% endif %}">{{ p }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-video"></i>
+            <p>No meetings found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

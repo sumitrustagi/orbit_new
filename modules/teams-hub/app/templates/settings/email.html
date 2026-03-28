@@ -1,0 +1,48 @@
+{% extends "admin/_base.html" %}
+{% block title %}Email Settings — {{ app_name }}{% endblock %}
+{% block page_title %}Email Settings{% endblock %}
+
+{% block content %}
+<div class="d-flex gap-2 mb-4">
+    <a href="{{ url_for('settings.general') }}" class="btn btn-secondary btn-sm"><i class="fas fa-cog"></i> General</a>
+    <a href="{{ url_for('settings.graph') }}" class="btn btn-secondary btn-sm"><i class="fas fa-project-diagram"></i> Graph API</a>
+    <a href="{{ url_for('settings.email') }}" class="btn btn-primary btn-sm"><i class="fas fa-envelope"></i> Email</a>
+    <a href="{{ url_for('settings.security') }}" class="btn btn-secondary btn-sm"><i class="fas fa-shield-alt"></i> Security</a>
+    <a href="{{ url_for('settings.env_viewer') }}" class="btn btn-secondary btn-sm"><i class="fas fa-terminal"></i> Environment</a>
+</div>
+
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><i class="fas fa-envelope"></i> SMTP Configuration</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>{{ form.smtp_host.label.text }}</label>
+                {{ form.smtp_host(class="form-control", placeholder="smtp.office365.com") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.smtp_port.label.text }}</label>
+                {{ form.smtp_port(class="form-control", placeholder="587") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.smtp_username.label.text }}</label>
+                {{ form.smtp_username(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.smtp_password.label.text }}</label>
+                {{ form.smtp_password(class="form-control", type="password", placeholder="Leave blank to keep current") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.smtp_sender.label.text }}</label>
+                {{ form.smtp_sender(class="form-control", placeholder="noreply@example.com") }}
+            </div>
+            <div class="form-group">
+                <label style="display:inline-flex; align-items:center; gap:6px;">
+                    {{ form.smtp_use_tls() }} Use TLS
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Email Settings</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

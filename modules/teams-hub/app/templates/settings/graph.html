@@ -1,0 +1,39 @@
+{% extends "admin/_base.html" %}
+{% block title %}Graph API Settings — {{ app_name }}{% endblock %}
+{% block page_title %}Graph API Settings{% endblock %}
+
+{% block content %}
+<div class="d-flex gap-2 mb-4">
+    <a href="{{ url_for('settings.general') }}" class="btn btn-secondary btn-sm"><i class="fas fa-cog"></i> General</a>
+    <a href="{{ url_for('settings.graph') }}" class="btn btn-primary btn-sm"><i class="fas fa-project-diagram"></i> Graph API</a>
+    <a href="{{ url_for('settings.email') }}" class="btn btn-secondary btn-sm"><i class="fas fa-envelope"></i> Email</a>
+    <a href="{{ url_for('settings.security') }}" class="btn btn-secondary btn-sm"><i class="fas fa-shield-alt"></i> Security</a>
+    <a href="{{ url_for('settings.env_viewer') }}" class="btn btn-secondary btn-sm"><i class="fas fa-terminal"></i> Environment</a>
+</div>
+
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><i class="fas fa-project-diagram"></i> Microsoft Graph API</div>
+    <div class="card-body">
+        <p class="text-muted mb-3" style="font-size:0.85rem;">
+            Configure the Azure AD App Registration credentials used to access the Microsoft Graph API.
+            You need an app with <strong>Application</strong> permissions for Teams, Users, and Communications.
+        </p>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>{{ form.tenant_id.label.text }}</label>
+                {{ form.tenant_id(class="form-control", placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.client_id.label.text }}</label>
+                {{ form.client_id(class="form-control", placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.client_secret.label.text }}</label>
+                {{ form.client_secret(class="form-control", placeholder="Enter new secret (leave blank to keep current)", type="password") }}
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Graph Settings</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "admin/_base.html" %}
+{% block title %}Security Settings — {{ app_name }}{% endblock %}
+{% block page_title %}Security Settings{% endblock %}
+
+{% block content %}
+<div class="d-flex gap-2 mb-4">
+    <a href="{{ url_for('settings.general') }}" class="btn btn-secondary btn-sm"><i class="fas fa-cog"></i> General</a>
+    <a href="{{ url_for('settings.graph') }}" class="btn btn-secondary btn-sm"><i class="fas fa-project-diagram"></i> Graph API</a>
+    <a href="{{ url_for('settings.email') }}" class="btn btn-secondary btn-sm"><i class="fas fa-envelope"></i> Email</a>
+    <a href="{{ url_for('settings.security') }}" class="btn btn-primary btn-sm"><i class="fas fa-shield-alt"></i> Security</a>
+    <a href="{{ url_for('settings.env_viewer') }}" class="btn btn-secondary btn-sm"><i class="fas fa-terminal"></i> Environment</a>
+</div>
+
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><i class="fas fa-shield-alt"></i> Security</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>{{ form.session_timeout.label.text }}</label>
+                {{ form.session_timeout(class="form-control", placeholder="30") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.max_login_attempts.label.text }}</label>
+                {{ form.max_login_attempts(class="form-control", placeholder="5") }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.lockout_duration.label.text }}</label>
+                {{ form.lockout_duration(class="form-control", placeholder="15") }}
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Security Settings</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

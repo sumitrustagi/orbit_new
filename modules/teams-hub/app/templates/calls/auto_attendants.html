@@ -1,0 +1,46 @@
+{% extends "admin/_base.html" %}
+{% block title %}Auto Attendants — {{ app_name }}{% endblock %}
+{% block page_title %}Auto Attendants{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-between align-center mb-3">
+    <form class="search-bar" method="GET">
+        <input type="text" name="q" class="form-control" placeholder="Search attendants..." value="{{ search }}">
+        <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i></button>
+    </form>
+    <a href="{{ url_for('calls.overview') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if attendants %}
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Name</th><th>Phone</th><th>Language</th><th>Greeting</th><th>Status</th><th>Synced</th></tr></thead>
+                <tbody>
+                    {% for a in attendants %}
+                    <tr>
+                        <td>{{ a.display_name }}</td>
+                        <td>{{ a.phone_number or '—' }}</td>
+                        <td>{{ a.language }}</td>
+                        <td><span class="badge badge-secondary">{{ a.greeting_type or 'text_to_speech' }}</span></td>
+                        <td>{% if a.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-danger">Inactive</span>{% endif %}</td>
+                        <td class="text-muted">{{ a.last_synced_at | timeago }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pages > 1 %}
+        <div class="pagination">
+            {% for p in range(1, pages + 1) %}
+            <a href="?page={{ p }}&q={{ search }}" class="{% if p == page %}active{% endif %}">{{ p }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state"><i class="fas fa-robot"></i><p>No auto attendants found. Sync from Microsoft 365.</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
