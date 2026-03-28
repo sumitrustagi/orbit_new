@@ -1,0 +1,31 @@
+{% extends "admin/_base.html" %}
+{% block title %}Expressway Nodes — Cisco UC Hub{% endblock %}
+{% block page_title %}Expressway Nodes{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-shield-alt"></i> Expressway Nodes ({{ nodes.total }})</h3></div>
+    <div class="card-body" style="padding: 0;">
+        <table>
+            <thead><tr><th>Name</th><th>Type</th><th>Host</th><th>Version</th><th>Status</th><th>Calls</th><th>Registrations</th><th>MRA</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for node in nodes.items %}
+                <tr>
+                    <td><a href="{{ url_for('expressway.node_detail', node_id=node.id) }}" style="color: var(--accent); text-decoration: none;">{{ node.name }}</a></td>
+                    <td><span class="badge {% if node.node_type == 'Core' %}badge-info{% else %}badge-warning{% endif %}">{{ node.node_type }}</span></td>
+                    <td style="font-family: monospace;">{{ node.host or '-' }}</td>
+                    <td>{{ node.software_version or '-' }}</td>
+                    <td>{% if node.status == 'Active' %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">{{ node.status or 'Unknown' }}</span>{% endif %}</td>
+                    <td>{{ node.active_calls or 0 }}/{{ node.max_calls or '-' }}</td>
+                    <td>{{ node.active_registrations or 0 }}/{{ node.max_registrations or '-' }}</td>
+                    <td>{% if node.mra_enabled %}<span class="badge badge-success">On</span>{% else %}<span class="badge badge-secondary">Off</span>{% endif %}</td>
+                    <td><a href="{{ url_for('expressway.node_detail', node_id=node.id) }}" class="btn btn-outline btn-sm">View</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">No Expressway nodes found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

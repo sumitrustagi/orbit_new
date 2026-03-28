@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup — Cisco UC Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --bg: #0f1117; --card-bg: #1a1d27; --text: #e4e7ef; --text-muted: #9ca3b4; --accent: #3b82f6; --accent-hover: #2563eb; --border: #2d3348; --input-bg: #242836; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .setup-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 500px; }
+        .setup-header { text-align: center; margin-bottom: 32px; }
+        .setup-header i { font-size: 40px; color: var(--accent); margin-bottom: 12px; }
+        .setup-header h1 { font-size: 22px; margin-bottom: 4px; }
+        .setup-header p { color: var(--text-muted); font-size: 13px; }
+        .section-title { font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px; padding-top: 16px; border-top: 1px solid var(--border); }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 13px; color: var(--text-muted); }
+        .form-control { width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; }
+        .form-control:focus { outline: none; border-color: var(--accent); }
+        .btn-setup { width: 100%; padding: 12px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .btn-setup:hover { opacity: 0.9; }
+        .hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <div class="setup-card">
+        <div class="setup-header">
+            <i class="fas fa-magic"></i>
+            <h1>Welcome to Cisco UC Hub</h1>
+            <p>Let's set up your admin account and connect to CUCM</p>
+        </div>
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="section-title">Admin Account</div>
+            <div class="form-group">
+                <label>Username</label>
+                {{ form.username(class="form-control", placeholder="admin") }}
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                {{ form.email(class="form-control", placeholder="admin@example.com") }}
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                {{ form.password(class="form-control", placeholder="Min 8 characters") }}
+            </div>
+
+            <div class="section-title">Application</div>
+            <div class="form-group">
+                <label>Application Name</label>
+                {{ form.app_name(class="form-control") }}
+            </div>
+
+            <div class="section-title">CUCM Connection (Optional)</div>
+            <p class="hint" style="margin-bottom: 12px;">You can configure this later in Settings.</p>
+            <div class="form-group">
+                <label>CUCM Host</label>
+                {{ form.cucm_host(class="form-control", placeholder="cucm-pub.domain.com") }}
+            </div>
+            <div class="form-group">
+                <label>AXL Username</label>
+                {{ form.cucm_user(class="form-control", placeholder="axl-admin") }}
+            </div>
+            <div class="form-group">
+                <label>AXL Password</label>
+                {{ form.cucm_pass(class="form-control", placeholder="Leave blank to skip") }}
+            </div>
+
+            <button type="submit" class="btn-setup">
+                <i class="fas fa-check"></i> Complete Setup
+            </button>
+        </form>
+    </div>
+</body>
+</html>

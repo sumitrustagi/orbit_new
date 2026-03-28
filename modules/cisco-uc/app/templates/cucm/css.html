@@ -1,0 +1,29 @@
+{% extends "admin/_base.html" %}
+{% block title %}Calling Search Spaces — Cisco UC Hub{% endblock %}
+{% block page_title %}Calling Search Spaces{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-search"></i> Calling Search Spaces ({{ css_items.total }})</h3></div>
+    <div class="card-body" style="padding: 0;">
+        <table>
+            <thead><tr><th>Name</th><th>Partitions</th><th>Description</th></tr></thead>
+            <tbody>
+                {% for css in css_items.items %}
+                <tr>
+                    <td style="font-weight: 500;">{{ css.name }}</td>
+                    <td>
+                        {% for p in css.get_partition_list() %}
+                        <span class="badge badge-info">{{ p }}</span>
+                        {% else %}-{% endfor %}
+                    </td>
+                    <td>{{ css.description or '-' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 24px;">No calling search spaces found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

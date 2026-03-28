@@ -1,0 +1,38 @@
+{% extends "admin/_base.html" %}
+{% block title %}CUCM Settings — Cisco UC Hub{% endblock %}
+{% block page_title %}CUCM Settings{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px;">
+    <div class="card-header"><h3><i class="fas fa-phone-alt"></i> CUCM Connection</h3></div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>CUCM Host</label>
+                {{ form.cucm_host(class="form-control", placeholder="cucm-pub.domain.com") }}
+            </div>
+            <div class="form-group">
+                <label>AXL Username</label>
+                {{ form.cucm_username(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>AXL Password</label>
+                {{ form.cucm_password(class="form-control", placeholder="Leave blank to keep current") }}
+            </div>
+            <div class="form-group">
+                <label>AXL Version</label>
+                {{ form.cucm_version(class="form-control") }}
+            </div>
+            <div class="form-check">
+                {{ form.cucm_verify_ssl(id="cucm_verify_ssl") }}
+                <label for="cucm_verify_ssl">Verify SSL Certificate</label>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Save CUCM Settings</button>
+                <a href="{{ url_for('settings.index') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

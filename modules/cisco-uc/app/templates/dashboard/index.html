@@ -1,0 +1,135 @@
+{% extends "admin/_base.html" %}
+{% block title %}Dashboard — Cisco UC Hub{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(59,130,246,0.15); color: var(--accent);">
+            <i class="fas fa-phone-alt"></i>
+        </div>
+        <div>
+            <div class="stat-value">{{ stats.phones }}</div>
+            <div class="stat-label">Phones</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16,185,129,0.15); color: var(--success);">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div>
+            <div class="stat-value">{{ stats.registered_phones }}</div>
+            <div class="stat-label">Registered</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(239,68,68,0.15); color: var(--danger);">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div>
+            <div class="stat-value">{{ stats.unregistered_phones }}</div>
+            <div class="stat-label">Unregistered</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(245,158,11,0.15); color: var(--warning);">
+            <i class="fas fa-layer-group"></i>
+        </div>
+        <div>
+            <div class="stat-value">{{ stats.device_pools }}</div>
+            <div class="stat-label">Device Pools</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(139,92,246,0.15); color: #8b5cf6;">
+            <i class="fas fa-voicemail"></i>
+        </div>
+        <div>
+            <div class="stat-value">{{ stats.unity_mailboxes }}</div>
+            <div class="stat-label">Mailboxes</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(6,182,212,0.15); color: var(--info);">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div>
+            <div class="stat-value">{{ stats.imp_users }}</div>
+            <div class="stat-label">IM&P Users</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(236,72,153,0.15); color: #ec4899;">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div>
+            <div class="stat-value">{{ stats.expressways }}</div>
+            <div class="stat-label">Expressways</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(34,197,94,0.15); color: #22c55e;">
+            <i class="fas fa-globe"></i>
+        </div>
+        <div>
+            <div class="stat-value">{{ stats.zones }}</div>
+            <div class="stat-label">Zones</div>
+        </div>
+    </div>
+</div>
+
+<!-- Integration Status -->
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header"><h3>Integration Status</h3></div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+            {% for name, configured in integrations.items() %}
+            <div class="integration-status">
+                <span class="status-dot {{ 'connected' if configured else 'disconnected' }}"></span>
+                <span>{{ name|upper }}</span>
+                <span class="badge {{ 'badge-success' if configured else 'badge-secondary' }}">
+                    {{ "Configured" if configured else "Not Configured" }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header">
+        <h3>Recent Activity</h3>
+        {% if current_user.is_gui_admin %}
+        <a href="{{ url_for('audit.list_logs') }}" class="btn btn-outline btn-sm">View All</a>
+        {% endif %}
+    </div>
+    <div class="card-body" style="padding: 0;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Category</th>
+                    <th>Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_audit %}
+                <tr>
+                    <td>{{ log.timestamp|timeago }}</td>
+                    <td>{{ log.username }}</td>
+                    <td><span class="badge badge-info">{{ log.action }}</span></td>
+                    <td>{{ log.category }}</td>
+                    <td>{{ log.detail[:80] if log.detail else '' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No recent activity</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

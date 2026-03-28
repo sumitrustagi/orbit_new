@@ -1,0 +1,32 @@
+{% extends "admin/_base.html" %}
+{% block title %}Unity Users — Cisco UC Hub{% endblock %}
+{% block page_title %}Unity Users{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-users"></i> Unity Users ({{ users.total }})</h3></div>
+    <div class="card-body">
+        <form class="search-bar" method="GET">
+            <input type="text" name="search" class="form-control" placeholder="Search by alias or name..." value="{{ search }}">
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Search</button>
+        </form>
+        <table>
+            <thead><tr><th>Alias</th><th>Name</th><th>Extension</th><th>SMTP</th><th>VM Enrolled</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for user in users.items %}
+                <tr>
+                    <td><a href="{{ url_for('unity.user_detail', user_id=user.id) }}" style="color: var(--accent); text-decoration: none;">{{ user.alias }}</a></td>
+                    <td>{{ user.display_name or (user.first_name ~ ' ' ~ user.last_name) if user.first_name else '-' }}</td>
+                    <td style="font-family: monospace;">{{ user.extension or '-' }}</td>
+                    <td>{{ user.smtp_address or '-' }}</td>
+                    <td>{% if user.is_vm_enrolled %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</td>
+                    <td><a href="{{ url_for('unity.user_detail', user_id=user.id) }}" class="btn btn-outline btn-sm">View</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No Unity users found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

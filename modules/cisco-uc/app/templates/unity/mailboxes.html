@@ -1,0 +1,42 @@
+{% extends "admin/_base.html" %}
+{% block title %}Mailboxes — Cisco UC Hub{% endblock %}
+{% block page_title %}Unity Mailboxes{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-voicemail"></i> Mailboxes ({{ mailboxes.total }})</h3></div>
+    <div class="card-body">
+        <form class="search-bar" method="GET">
+            <input type="text" name="search" class="form-control" placeholder="Search by alias, name, or extension..." value="{{ search }}">
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Search</button>
+        </form>
+        <table>
+            <thead><tr><th>Alias</th><th>Display Name</th><th>Extension</th><th>Type</th><th>VM Enabled</th><th>CoS</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for mb in mailboxes.items %}
+                <tr>
+                    <td><a href="{{ url_for('unity.mailbox_detail', mb_id=mb.id) }}" style="color: var(--accent); text-decoration: none;">{{ mb.alias }}</a></td>
+                    <td>{{ mb.display_name or '-' }}</td>
+                    <td style="font-family: monospace;">{{ mb.extension or '-' }}</td>
+                    <td>{{ mb.mailbox_type or '-' }}</td>
+                    <td>{% if mb.is_vm_enabled %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</td>
+                    <td>{{ mb.cos_name or '-' }}</td>
+                    <td><a href="{{ url_for('unity.mailbox_detail', mb_id=mb.id) }}" class="btn btn-outline btn-sm">View</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No mailboxes found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if mailboxes.pages > 1 %}
+        <div class="pagination">
+            {% if mailboxes.has_prev %}<a href="{{ url_for('unity.mailboxes', page=mailboxes.prev_num, search=search) }}">&laquo; Prev</a>{% endif %}
+            {% for p in mailboxes.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if p %}{% if p == mailboxes.page %}<span class="active"><span>{{ p }}</span></span>{% else %}<a href="{{ url_for('unity.mailboxes', page=p, search=search) }}">{{ p }}</a>{% endif %}{% else %}<span>...</span>{% endif %}
+            {% endfor %}
+            {% if mailboxes.has_next %}<a href="{{ url_for('unity.mailboxes', page=mailboxes.next_num, search=search) }}">Next &raquo;</a>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

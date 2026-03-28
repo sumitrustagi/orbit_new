@@ -1,0 +1,25 @@
+{% extends "admin/_base.html" %}
+{% block title %}Partitions — Cisco UC Hub{% endblock %}
+{% block page_title %}Partitions{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-divide"></i> Partitions ({{ partitions.total }})</h3></div>
+    <div class="card-body" style="padding: 0;">
+        <table>
+            <thead><tr><th>Name</th><th>Description</th><th>Time Schedule</th></tr></thead>
+            <tbody>
+                {% for p in partitions.items %}
+                <tr>
+                    <td style="font-weight: 500;">{{ p.name }}</td>
+                    <td>{{ p.description or '-' }}</td>
+                    <td>{{ p.time_schedule or '-' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 24px;">No partitions found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

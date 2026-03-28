@@ -1,0 +1,27 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ mailbox.alias }} — Cisco UC Hub{% endblock %}
+{% block page_title %}Mailbox: {{ mailbox.alias }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-voicemail"></i> {{ mailbox.display_name or mailbox.alias }}</h3></div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-label">Alias</div><div class="detail-value">{{ mailbox.alias }}</div>
+            <div class="detail-label">Display Name</div><div class="detail-value">{{ mailbox.display_name or '-' }}</div>
+            <div class="detail-label">Extension</div><div class="detail-value" style="font-family: monospace;">{{ mailbox.extension or '-' }}</div>
+            <div class="detail-label">DTMF Access ID</div><div class="detail-value">{{ mailbox.dtmf_access_id or '-' }}</div>
+            <div class="detail-label">Mailbox Type</div><div class="detail-value">{{ mailbox.mailbox_type or '-' }}</div>
+            <div class="detail-label">VM Enabled</div><div class="detail-value">{% if mailbox.is_vm_enabled %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+            <div class="detail-label">Greeting Type</div><div class="detail-value">{{ mailbox.greeting_type or '-' }}</div>
+            <div class="detail-label">Max Message Length</div><div class="detail-value">{{ mailbox.max_msg_length or '-' }}s</div>
+            <div class="detail-label">Class of Service</div><div class="detail-value">{{ mailbox.cos_name or '-' }}</div>
+            <div class="detail-label">Partition</div><div class="detail-value">{{ mailbox.partition_name or '-' }}</div>
+            <div class="detail-label">SMTP Address</div><div class="detail-value">{{ mailbox.smtp_address or '-' }}</div>
+            <div class="detail-label">MWI Enabled</div><div class="detail-value">{% if mailbox.is_mwi_enabled %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+            <div class="detail-label">Unity Object ID</div><div class="detail-value" style="font-family: monospace; font-size: 12px;">{{ mailbox.unity_object_id or '-' }}</div>
+        </div>
+    </div>
+</div>
+<a href="{{ url_for('unity.mailboxes') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Mailboxes</a>
+{% endblock %}

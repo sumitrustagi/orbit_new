@@ -1,0 +1,42 @@
+{% extends "admin/_base.html" %}
+{% block title %}Security Settings — Cisco UC Hub{% endblock %}
+{% block page_title %}Security Settings{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px;">
+    <div class="card-header"><h3><i class="fas fa-lock"></i> Security Settings</h3></div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>Min Password Length</label>
+                {{ form.password_min_length(class="form-control", type="number") }}
+            </div>
+            <div class="form-check">
+                {{ form.password_require_upper(id="pw_upper") }}
+                <label for="pw_upper">Require Uppercase Letter</label>
+            </div>
+            <div class="form-check">
+                {{ form.password_require_digit(id="pw_digit") }}
+                <label for="pw_digit">Require Digit</label>
+            </div>
+            <div class="form-check">
+                {{ form.password_require_special(id="pw_special") }}
+                <label for="pw_special">Require Special Character</label>
+            </div>
+            <div class="form-group">
+                <label>Max Login Attempts</label>
+                {{ form.max_login_attempts(class="form-control", type="number") }}
+            </div>
+            <div class="form-group">
+                <label>Lockout Duration (minutes)</label>
+                {{ form.lockout_duration(class="form-control", type="number") }}
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Save Security Settings</button>
+                <a href="{{ url_for('settings.index') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

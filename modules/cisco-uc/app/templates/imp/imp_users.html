@@ -1,0 +1,38 @@
+{% extends "admin/_base.html" %}
+{% block title %}IM&P Users — Cisco UC Hub{% endblock %}
+{% block page_title %}IM&P Presence Users{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-comments"></i> IM&P Users ({{ users.total }})</h3></div>
+    <div class="card-body">
+        <form class="search-bar" method="GET">
+            <input type="text" name="search" class="form-control" placeholder="Search by user ID, name, or Jabber ID..." value="{{ search }}">
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Search</button>
+        </form>
+        <table>
+            <thead><tr><th>User ID</th><th>Name</th><th>Jabber ID</th><th>Presence</th><th>IM Enabled</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for user in users.items %}
+                <tr>
+                    <td><a href="{{ url_for('imp.user_detail', user_id=user.id) }}" style="color: var(--accent); text-decoration: none;">{{ user.user_id }}</a></td>
+                    <td>{{ user.display_name or '-' }}</td>
+                    <td>{{ user.jabber_id or '-' }}</td>
+                    <td>
+                        {% if user.presence_status == 'Available' %}<span class="badge badge-success">Available</span>
+                        {% elif user.presence_status == 'Away' %}<span class="badge badge-warning">Away</span>
+                        {% elif user.presence_status == 'DND' %}<span class="badge badge-danger">DND</span>
+                        {% elif user.presence_status == 'Offline' %}<span class="badge badge-secondary">Offline</span>
+                        {% else %}<span class="badge badge-secondary">{{ user.presence_status or 'Unknown' }}</span>{% endif %}
+                    </td>
+                    <td>{% if user.im_enabled %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</td>
+                    <td><a href="{{ url_for('imp.user_detail', user_id=user.id) }}" class="btn btn-outline btn-sm">View</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No IM&P users found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

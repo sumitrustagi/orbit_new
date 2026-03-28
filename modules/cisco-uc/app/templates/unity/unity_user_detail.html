@@ -1,0 +1,25 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ user.alias }} — Cisco UC Hub{% endblock %}
+{% block page_title %}Unity User: {{ user.alias }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-user"></i> {{ user.display_name or user.alias }}</h3></div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-label">Alias</div><div class="detail-value">{{ user.alias }}</div>
+            <div class="detail-label">Display Name</div><div class="detail-value">{{ user.display_name or '-' }}</div>
+            <div class="detail-label">First Name</div><div class="detail-value">{{ user.first_name or '-' }}</div>
+            <div class="detail-label">Last Name</div><div class="detail-value">{{ user.last_name or '-' }}</div>
+            <div class="detail-label">Extension</div><div class="detail-value" style="font-family: monospace;">{{ user.extension or '-' }}</div>
+            <div class="detail-label">SMTP Address</div><div class="detail-value">{{ user.smtp_address or '-' }}</div>
+            <div class="detail-label">VM Enrolled</div><div class="detail-value">{% if user.is_vm_enrolled %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+            <div class="detail-label">Class of Service</div><div class="detail-value">{{ user.cos_name or '-' }}</div>
+            <div class="detail-label">Locked</div><div class="detail-value">{% if user.is_locked %}<span class="badge badge-danger">Locked</span>{% else %}<span class="badge badge-success">Active</span>{% endif %}</div>
+            <div class="detail-label">LDAP Type</div><div class="detail-value">{{ user.ldap_type or '-' }}</div>
+            <div class="detail-label">Unity Object ID</div><div class="detail-value" style="font-family: monospace; font-size: 12px;">{{ user.unity_object_id or '-' }}</div>
+        </div>
+    </div>
+</div>
+<a href="{{ url_for('unity.users') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Unity Users</a>
+{% endblock %}

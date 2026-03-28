@@ -1,0 +1,48 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ phone.name }} — Cisco UC Hub{% endblock %}
+{% block page_title %}Phone: {{ phone.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-phone-alt"></i> {{ phone.name }}</h3>
+        <div>
+            {% if phone.status == 'Registered' %}
+            <span class="badge badge-success">Registered</span>
+            {% elif phone.status == 'Unregistered' %}
+            <span class="badge badge-danger">Unregistered</span>
+            {% else %}
+            <span class="badge badge-secondary">{{ phone.status or 'Unknown' }}</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-label">Device Name</div><div class="detail-value">{{ phone.name }}</div>
+            <div class="detail-label">Description</div><div class="detail-value">{{ phone.description or '-' }}</div>
+            <div class="detail-label">Model</div><div class="detail-value">{{ phone.model or '-' }}</div>
+            <div class="detail-label">Protocol</div><div class="detail-value">{{ phone.protocol or '-' }}</div>
+            <div class="detail-label">Directory Number</div><div class="detail-value">{{ phone.directory_number or '-' }}</div>
+            <div class="detail-label">Device Pool</div><div class="detail-value">{{ phone.device_pool or '-' }}</div>
+            <div class="detail-label">CSS</div><div class="detail-value">{{ phone.calling_search_space or '-' }}</div>
+            <div class="detail-label">Location</div><div class="detail-value">{{ phone.location or '-' }}</div>
+            <div class="detail-label">IP Address</div><div class="detail-value">{{ phone.ip_address or '-' }}</div>
+            <div class="detail-label">MAC Address</div><div class="detail-value">{{ phone.mac_address or '-' }}</div>
+            <div class="detail-label">Firmware</div><div class="detail-value">{{ phone.firmware or '-' }}</div>
+            <div class="detail-label">Owner</div><div class="detail-value">{{ phone.owner_user_id or '-' }}</div>
+            <div class="detail-label">Cluster Node</div><div class="detail-value">{{ phone.cluster_node or '-' }}</div>
+            <div class="detail-label">CUCM UUID</div><div class="detail-value" style="font-family: monospace; font-size: 12px;">{{ phone.cucm_uuid or '-' }}</div>
+            <div class="detail-label">Last Seen</div><div class="detail-value">{{ phone.last_seen|timeago if phone.last_seen else 'Never' }}</div>
+            <div class="detail-label">Created</div><div class="detail-value">{{ phone.created_at|datetime_format if phone.created_at else '-' }}</div>
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('cucm.phones') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Phones</a>
+{% if current_user.is_gui_admin %}
+<form method="POST" action="{{ url_for('cucm.phone_delete', phone_id=phone.id) }}" style="display: inline;" onsubmit="return confirm('Delete this phone?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
+</form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "admin/_base.html" %}
+{% block title %}General Settings — Cisco UC Hub{% endblock %}
+{% block page_title %}General Settings{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px;">
+    <div class="card-header"><h3><i class="fas fa-sliders-h"></i> General Settings</h3></div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>Application Name</label>
+                {{ form.app_name(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>Session Timeout (minutes)</label>
+                {{ form.session_timeout(class="form-control", type="number") }}
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Save General Settings</button>
+                <a href="{{ url_for('settings.index') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

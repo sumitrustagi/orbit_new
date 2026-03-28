@@ -1,0 +1,30 @@
+{% extends "admin/_base.html" %}
+{% block title %}Zones — Cisco UC Hub{% endblock %}
+{% block page_title %}Expressway Zones{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-globe"></i> Zones ({{ zones.total }})</h3></div>
+    <div class="card-body" style="padding: 0;">
+        <table>
+            <thead><tr><th>Name</th><th>Type</th><th>Peer Address</th><th>Port</th><th>Transport</th><th>Status</th><th>Expressway</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for zone in zones.items %}
+                <tr>
+                    <td><a href="{{ url_for('expressway.zone_detail', zone_id=zone.id) }}" style="color: var(--accent); text-decoration: none;">{{ zone.name }}</a></td>
+                    <td>{{ zone.zone_type or '-' }}</td>
+                    <td style="font-family: monospace;">{{ zone.peer_address or '-' }}</td>
+                    <td>{{ zone.peer_port or '-' }}</td>
+                    <td>{{ zone.transport or '-' }}</td>
+                    <td>{% if zone.status == 'Active' %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">{{ zone.status or 'Unknown' }}</span>{% endif %}</td>
+                    <td>{{ zone.expressway.name if zone.expressway else '-' }}</td>
+                    <td><a href="{{ url_for('expressway.zone_detail', zone_id=zone.id) }}" class="btn btn-outline btn-sm">View</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">No zones found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

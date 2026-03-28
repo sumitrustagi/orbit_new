@@ -1,0 +1,43 @@
+{% extends "admin/_base.html" %}
+{% block title %}Settings — Cisco UC Hub{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="settings-grid">
+    <a href="{{ url_for('settings.general') }}" class="settings-card">
+        <i class="fas fa-sliders-h"></i>
+        <h4>General</h4>
+        <p>Application name, session timeout, and general preferences.</p>
+    </a>
+    <a href="{{ url_for('settings.cucm') }}" class="settings-card">
+        <i class="fas fa-phone-alt"></i>
+        <h4>CUCM</h4>
+        <p>Configure Cisco Unified Communications Manager connection.</p>
+    </a>
+    <a href="{{ url_for('settings.unity') }}" class="settings-card">
+        <i class="fas fa-voicemail"></i>
+        <h4>Unity Connection</h4>
+        <p>Configure Cisco Unity Connection voicemail server.</p>
+    </a>
+    <a href="{{ url_for('settings.imp') }}" class="settings-card">
+        <i class="fas fa-comments"></i>
+        <h4>IM&P</h4>
+        <p>Configure Cisco IM and Presence server connection.</p>
+    </a>
+    <a href="{{ url_for('settings.expressway') }}" class="settings-card">
+        <i class="fas fa-shield-alt"></i>
+        <h4>Expressway</h4>
+        <p>Configure Cisco Expressway / VCS connection.</p>
+    </a>
+    <a href="{{ url_for('settings.email') }}" class="settings-card">
+        <i class="fas fa-envelope"></i>
+        <h4>Email / SMTP</h4>
+        <p>Configure outbound email and SMTP settings.</p>
+    </a>
+    <a href="{{ url_for('settings.security') }}" class="settings-card">
+        <i class="fas fa-lock"></i>
+        <h4>Security</h4>
+        <p>Password policy, login attempts, and lockout settings.</p>
+    </a>
+</div>
+{% endblock %}

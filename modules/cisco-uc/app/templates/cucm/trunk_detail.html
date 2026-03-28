@@ -1,0 +1,27 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ trunk.name }} — Cisco UC Hub{% endblock %}
+{% block page_title %}Trunk: {{ trunk.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-project-diagram"></i> {{ trunk.name }}</h3></div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-label">Name</div><div class="detail-value">{{ trunk.name }}</div>
+            <div class="detail-label">Description</div><div class="detail-value">{{ trunk.description or '-' }}</div>
+            <div class="detail-label">Type</div><div class="detail-value">{{ trunk.trunk_type or '-' }}</div>
+            <div class="detail-label">Device Pool</div><div class="detail-value">{{ trunk.device_pool or '-' }}</div>
+            <div class="detail-label">CSS</div><div class="detail-value">{{ trunk.calling_search_space or '-' }}</div>
+            <div class="detail-label">Destination</div><div class="detail-value" style="font-family: monospace;">{{ trunk.destination_address or '-' }}{% if trunk.destination_port %}:{{ trunk.destination_port }}{% endif %}</div>
+            <div class="detail-label">SIP Profile</div><div class="detail-value">{{ trunk.sip_profile or '-' }}</div>
+            <div class="detail-label">Security Profile</div><div class="detail-value">{{ trunk.security_profile or '-' }}</div>
+            <div class="detail-label">Status</div><div class="detail-value">
+                {% if trunk.status == 'Active' %}<span class="badge badge-success">Active</span>
+                {% else %}<span class="badge badge-secondary">{{ trunk.status or 'Unknown' }}</span>{% endif %}
+            </div>
+            <div class="detail-label">CUCM UUID</div><div class="detail-value" style="font-family: monospace; font-size: 12px;">{{ trunk.cucm_uuid or '-' }}</div>
+        </div>
+    </div>
+</div>
+<a href="{{ url_for('cucm.trunks') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Trunks</a>
+{% endblock %}

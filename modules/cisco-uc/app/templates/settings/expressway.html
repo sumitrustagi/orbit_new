@@ -1,0 +1,34 @@
+{% extends "admin/_base.html" %}
+{% block title %}Expressway Settings — Cisco UC Hub{% endblock %}
+{% block page_title %}Expressway Settings{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px;">
+    <div class="card-header"><h3><i class="fas fa-shield-alt"></i> Expressway / VCS</h3></div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>Expressway Host</label>
+                {{ form.expressway_host(class="form-control", placeholder="expressway.domain.com") }}
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                {{ form.expressway_username(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                {{ form.expressway_password(class="form-control", placeholder="Leave blank to keep current") }}
+            </div>
+            <div class="form-check">
+                {{ form.expressway_verify_ssl(id="expressway_verify_ssl") }}
+                <label for="expressway_verify_ssl">Verify SSL Certificate</label>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Save Expressway Settings</button>
+                <a href="{{ url_for('settings.index') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

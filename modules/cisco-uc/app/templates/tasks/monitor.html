@@ -1,0 +1,65 @@
+{% extends "admin/_base.html" %}
+{% block title %}Task Monitor — Cisco UC Hub{% endblock %}
+{% block page_title %}Task Monitor{% endblock %}
+
+{% block content %}
+<!-- Trigger Tasks -->
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-play-circle"></i> Trigger Sync Tasks</h3>
+        <a href="{{ url_for('tasks.history') }}" class="btn btn-outline btn-sm"><i class="fas fa-history"></i> History</a>
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;">
+            {% set task_list = [
+                ('sync_phones', 'Sync Phones', 'fa-phone-alt'),
+                ('sync_device_pools', 'Sync Device Pools', 'fa-layer-group'),
+                ('sync_partitions', 'Sync Partitions', 'fa-divide'),
+                ('sync_css', 'Sync CSS', 'fa-search'),
+                ('sync_route_patterns', 'Sync Route Patterns', 'fa-route'),
+                ('sync_gateways', 'Sync Gateways', 'fa-server'),
+                ('sync_trunks', 'Sync Trunks', 'fa-project-diagram'),
+                ('sync_unity_users', 'Sync Unity Users', 'fa-users'),
+                ('sync_unity_mailboxes', 'Sync Mailboxes', 'fa-voicemail'),
+                ('sync_imp_users', 'Sync IM&P Users', 'fa-comments'),
+                ('sync_expressways', 'Sync Expressways', 'fa-shield-alt'),
+                ('health_ping', 'Health Ping', 'fa-heartbeat'),
+            ] %}
+            {% for name, label, icon in task_list %}
+            <form method="POST" action="{{ url_for('tasks.trigger', task_name=name) }}" style="display: inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-outline" style="width: 100%; justify-content: flex-start;">
+                    <i class="fas {{ icon }}"></i> {{ label }}
+                </button>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Worker Status -->
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-cogs"></i> Worker Status</h3></div>
+    <div class="card-body">
+        {% if stats %}
+        <table>
+            <thead><tr><th>Worker</th><th>Active Tasks</th><th>Scheduled</th><th>Reserved</th></tr></thead>
+            <tbody>
+                {% for worker in stats.keys() %}
+                <tr>
+                    <td style="font-weight: 500;">{{ worker }}</td>
+                    <td>{{ (active.get(worker, [])|length) }}</td>
+                    <td>{{ (scheduled.get(worker, [])|length) }}</td>
+                    <td>{{ (reserved.get(worker, [])|length) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 20px;">
+            <i class="fas fa-info-circle"></i> No Celery workers detected. Start the worker with: <code>celery -A celery_worker.celery worker --loglevel=info</code>
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

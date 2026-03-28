@@ -1,0 +1,42 @@
+{% extends "admin/_base.html" %}
+{% block title %}Email Settings — Cisco UC Hub{% endblock %}
+{% block page_title %}Email / SMTP Settings{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px;">
+    <div class="card-header"><h3><i class="fas fa-envelope"></i> Email Settings</h3></div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>SMTP Host</label>
+                {{ form.smtp_host(class="form-control", placeholder="smtp.gmail.com") }}
+            </div>
+            <div class="form-group">
+                <label>SMTP Port</label>
+                {{ form.smtp_port(class="form-control", type="number") }}
+            </div>
+            <div class="form-group">
+                <label>SMTP Username</label>
+                {{ form.smtp_username(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>SMTP Password</label>
+                {{ form.smtp_password(class="form-control", placeholder="Leave blank to keep current") }}
+            </div>
+            <div class="form-check">
+                {{ form.smtp_use_tls(id="smtp_use_tls") }}
+                <label for="smtp_use_tls">Use TLS</label>
+            </div>
+            <div class="form-group">
+                <label>Sender Email</label>
+                {{ form.smtp_sender(class="form-control", placeholder="noreply@example.com") }}
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Save Email Settings</button>
+                <a href="{{ url_for('settings.index') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

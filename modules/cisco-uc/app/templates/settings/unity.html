@@ -1,0 +1,34 @@
+{% extends "admin/_base.html" %}
+{% block title %}Unity Settings — Cisco UC Hub{% endblock %}
+{% block page_title %}Unity Connection Settings{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px;">
+    <div class="card-header"><h3><i class="fas fa-voicemail"></i> Unity Connection</h3></div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>Unity Host</label>
+                {{ form.unity_host(class="form-control", placeholder="unity.domain.com") }}
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                {{ form.unity_username(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                {{ form.unity_password(class="form-control", placeholder="Leave blank to keep current") }}
+            </div>
+            <div class="form-check">
+                {{ form.unity_verify_ssl(id="unity_verify_ssl") }}
+                <label for="unity_verify_ssl">Verify SSL Certificate</label>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Save Unity Settings</button>
+                <a href="{{ url_for('settings.index') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ node.name }} — Cisco UC Hub{% endblock %}
+{% block page_title %}Expressway: {{ node.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-shield-alt"></i> {{ node.name }}</h3>
+        <span class="badge {% if node.node_type == 'Core' %}badge-info{% else %}badge-warning{% endif %}">{{ node.node_type }}</span>
+    </div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-label">Name</div><div class="detail-value">{{ node.name }}</div>
+            <div class="detail-label">Host</div><div class="detail-value" style="font-family: monospace;">{{ node.host or '-' }}</div>
+            <div class="detail-label">Node Type</div><div class="detail-value">{{ node.node_type }}</div>
+            <div class="detail-label">Serial Number</div><div class="detail-value">{{ node.serial_number or '-' }}</div>
+            <div class="detail-label">Software Version</div><div class="detail-value">{{ node.software_version or '-' }}</div>
+            <div class="detail-label">Hardware Version</div><div class="detail-value">{{ node.hardware_version or '-' }}</div>
+            <div class="detail-label">Status</div><div class="detail-value">{% if node.status == 'Active' %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">{{ node.status or 'Unknown' }}</span>{% endif %}</div>
+            <div class="detail-label">Active Calls</div><div class="detail-value">{{ node.active_calls or 0 }} / {{ node.max_calls or '-' }}</div>
+            <div class="detail-label">Registrations</div><div class="detail-value">{{ node.active_registrations or 0 }} / {{ node.max_registrations or '-' }}</div>
+            <div class="detail-label">MRA</div><div class="detail-value">{% if node.mra_enabled %}<span class="badge badge-success">Enabled</span>{% else %}<span class="badge badge-secondary">Disabled</span>{% endif %}</div>
+            <div class="detail-label">B2B Calls</div><div class="detail-value">{% if node.b2b_enabled %}<span class="badge badge-success">Enabled</span>{% else %}<span class="badge badge-secondary">Disabled</span>{% endif %}</div>
+            <div class="detail-label">Cluster</div><div class="detail-value">{{ node.cluster_name or '-' }}</div>
+            <div class="detail-label">System Name</div><div class="detail-value">{{ node.system_name or '-' }}</div>
+            <div class="detail-label">Uptime</div><div class="detail-value">{{ node.uptime or '-' }}</div>
+            <div class="detail-label">Last Polled</div><div class="detail-value">{{ node.last_polled|timeago if node.last_polled else 'Never' }}</div>
+        </div>
+    </div>
+</div>
+
+{% if zones %}
+<div class="card" style="margin-top: 20px;">
+    <div class="card-header"><h3>Zones ({{ zones|length }})</h3></div>
+    <div class="card-body" style="padding: 0;">
+        <table>
+            <thead><tr><th>Name</th><th>Type</th><th>Peer Address</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for zone in zones %}
+                <tr>
+                    <td><a href="{{ url_for('expressway.zone_detail', zone_id=zone.id) }}" style="color: var(--accent); text-decoration: none;">{{ zone.name }}</a></td>
+                    <td>{{ zone.zone_type or '-' }}</td>
+                    <td style="font-family: monospace;">{{ zone.peer_address or '-' }}</td>
+                    <td>{% if zone.status == 'Active' %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">{{ zone.status or 'Unknown' }}</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<div style="margin-top: 16px;">
+    <a href="{{ url_for('expressway.nodes') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Nodes</a>
+</div>
+{% endblock %}

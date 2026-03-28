@@ -1,0 +1,25 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ zone.name }} — Cisco UC Hub{% endblock %}
+{% block page_title %}Zone: {{ zone.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-globe"></i> {{ zone.name }}</h3></div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-label">Name</div><div class="detail-value">{{ zone.name }}</div>
+            <div class="detail-label">Type</div><div class="detail-value">{{ zone.zone_type or '-' }}</div>
+            <div class="detail-label">Peer Address</div><div class="detail-value" style="font-family: monospace;">{{ zone.peer_address or '-' }}</div>
+            <div class="detail-label">Peer Port</div><div class="detail-value">{{ zone.peer_port or '-' }}</div>
+            <div class="detail-label">Transport</div><div class="detail-value">{{ zone.transport or '-' }}</div>
+            <div class="detail-label">Direction</div><div class="detail-value">{{ zone.direction or '-' }}</div>
+            <div class="detail-label">SIP Mode</div><div class="detail-value">{{ zone.sip_mode or '-' }}</div>
+            <div class="detail-label">H.323 Mode</div><div class="detail-value">{{ zone.h323_mode or '-' }}</div>
+            <div class="detail-label">Search Rules</div><div class="detail-value">{{ zone.search_rules or '-' }}</div>
+            <div class="detail-label">Status</div><div class="detail-value">{% if zone.status == 'Active' %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">{{ zone.status or 'Unknown' }}</span>{% endif %}</div>
+            <div class="detail-label">Expressway</div><div class="detail-value">{% if zone.expressway %}<a href="{{ url_for('expressway.node_detail', node_id=zone.expressway.id) }}" style="color: var(--accent);">{{ zone.expressway.name }}</a>{% else %}-{% endif %}</div>
+        </div>
+    </div>
+</div>
+<a href="{{ url_for('expressway.zones') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Zones</a>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ user.user_id }} — Cisco UC Hub{% endblock %}
+{% block page_title %}IM&P User: {{ user.user_id }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-comments"></i> {{ user.display_name or user.user_id }}</h3></div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-label">User ID</div><div class="detail-value">{{ user.user_id }}</div>
+            <div class="detail-label">Display Name</div><div class="detail-value">{{ user.display_name or '-' }}</div>
+            <div class="detail-label">Email</div><div class="detail-value">{{ user.email or '-' }}</div>
+            <div class="detail-label">Jabber ID</div><div class="detail-value">{{ user.jabber_id or '-' }}</div>
+            <div class="detail-label">IM Enabled</div><div class="detail-value">{% if user.im_enabled %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+            <div class="detail-label">Presence Status</div><div class="detail-value">
+                {% if user.presence_status == 'Available' %}<span class="badge badge-success">Available</span>
+                {% elif user.presence_status == 'Away' %}<span class="badge badge-warning">Away</span>
+                {% elif user.presence_status == 'DND' %}<span class="badge badge-danger">DND</span>
+                {% else %}<span class="badge badge-secondary">{{ user.presence_status or 'Unknown' }}</span>{% endif %}
+            </div>
+            <div class="detail-label">Status Message</div><div class="detail-value">{{ user.status_message or '-' }}</div>
+            <div class="detail-label">Home Cluster</div><div class="detail-value">{{ user.home_cluster or '-' }}</div>
+            <div class="detail-label">Device Name</div><div class="detail-value">{{ user.device_name or '-' }}</div>
+            <div class="detail-label">Directory URI</div><div class="detail-value">{{ user.directory_uri or '-' }}</div>
+            <div class="detail-label">UCM Synced</div><div class="detail-value">{% if user.is_ucm_synced %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+            <div class="detail-label">Federation</div><div class="detail-value">{% if user.federation_enabled %}<span class="badge badge-info">Enabled</span>{% else %}<span class="badge badge-secondary">Disabled</span>{% endif %}</div>
+            <div class="detail-label">Compliance</div><div class="detail-value">{% if user.compliance_enabled %}<span class="badge badge-info">Enabled</span>{% else %}<span class="badge badge-secondary">Disabled</span>{% endif %}</div>
+        </div>
+    </div>
+</div>
+<a href="{{ url_for('imp.users') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to IM&P Users</a>
+{% endblock %}

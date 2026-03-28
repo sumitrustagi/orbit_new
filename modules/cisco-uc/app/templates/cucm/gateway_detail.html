@@ -1,0 +1,27 @@
+{% extends "admin/_base.html" %}
+{% block title %}{{ gateway.name }} — Cisco UC Hub{% endblock %}
+{% block page_title %}Gateway: {{ gateway.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-server"></i> {{ gateway.name }}</h3></div>
+    <div class="card-body">
+        <div class="detail-grid">
+            <div class="detail-label">Name</div><div class="detail-value">{{ gateway.name }}</div>
+            <div class="detail-label">Description</div><div class="detail-value">{{ gateway.description or '-' }}</div>
+            <div class="detail-label">Type</div><div class="detail-value">{{ gateway.gateway_type or '-' }}</div>
+            <div class="detail-label">IP Address</div><div class="detail-value" style="font-family: monospace;">{{ gateway.ip_address or '-' }}</div>
+            <div class="detail-label">Protocol</div><div class="detail-value">{{ gateway.protocol or '-' }}</div>
+            <div class="detail-label">Vendor</div><div class="detail-value">{{ gateway.vendor or '-' }}</div>
+            <div class="detail-label">Model</div><div class="detail-value">{{ gateway.model or '-' }}</div>
+            <div class="detail-label">Port Count</div><div class="detail-value">{{ gateway.port_count or '-' }}</div>
+            <div class="detail-label">Status</div><div class="detail-value">
+                {% if gateway.status == 'Active' %}<span class="badge badge-success">Active</span>
+                {% else %}<span class="badge badge-secondary">{{ gateway.status or 'Unknown' }}</span>{% endif %}
+            </div>
+            <div class="detail-label">CUCM UUID</div><div class="detail-value" style="font-family: monospace; font-size: 12px;">{{ gateway.cucm_uuid or '-' }}</div>
+        </div>
+    </div>
+</div>
+<a href="{{ url_for('cucm.gateways') }}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Gateways</a>
+{% endblock %}

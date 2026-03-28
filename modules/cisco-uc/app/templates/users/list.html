@@ -1,0 +1,38 @@
+{% extends "admin/_base.html" %}
+{% block title %}Users — Cisco UC Hub{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-user-cog"></i> Users ({{ users.total }})</h3>
+        <a href="{{ url_for('users.create') }}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Create User</a>
+    </div>
+    <div class="card-body">
+        <form class="search-bar" method="GET">
+            <input type="text" name="search" class="form-control" placeholder="Search users..." value="{{ search }}">
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i></button>
+        </form>
+        <table>
+            <thead><tr><th>Username</th><th>Email</th><th>Name</th><th>Role</th><th>Active</th><th>Last Login</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for user in users.items %}
+                <tr>
+                    <td><a href="{{ url_for('users.detail', user_id=user.id) }}" style="color: var(--accent); text-decoration: none;">{{ user.username }}</a></td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.display_name }}</td>
+                    <td><span class="badge {% if user.role.value == 'platform_admin' %}badge-danger{% elif user.role.value == 'gui_admin' %}badge-warning{% else %}badge-info{% endif %}">{{ user.role.value }}</span></td>
+                    <td>{% if user.is_active %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</td>
+                    <td>{{ user.last_login|timeago if user.last_login else 'Never' }}</td>
+                    <td>
+                        <a href="{{ url_for('users.edit', user_id=user.id) }}" class="btn btn-outline btn-sm">Edit</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No users found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

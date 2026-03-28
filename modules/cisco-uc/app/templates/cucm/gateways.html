@@ -1,0 +1,31 @@
+{% extends "admin/_base.html" %}
+{% block title %}Gateways — Cisco UC Hub{% endblock %}
+{% block page_title %}Gateways{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3><i class="fas fa-server"></i> Gateways ({{ gateways.total }})</h3></div>
+    <div class="card-body" style="padding: 0;">
+        <table>
+            <thead><tr><th>Name</th><th>Type</th><th>IP Address</th><th>Protocol</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for gw in gateways.items %}
+                <tr>
+                    <td><a href="{{ url_for('cucm.gateway_detail', gw_id=gw.id) }}" style="color: var(--accent); text-decoration: none;">{{ gw.name }}</a></td>
+                    <td>{{ gw.gateway_type or '-' }}</td>
+                    <td style="font-family: monospace;">{{ gw.ip_address or '-' }}</td>
+                    <td>{{ gw.protocol or '-' }}</td>
+                    <td>
+                        {% if gw.status == 'Active' %}<span class="badge badge-success">Active</span>
+                        {% else %}<span class="badge badge-secondary">{{ gw.status or 'Unknown' }}</span>{% endif %}
+                    </td>
+                    <td><a href="{{ url_for('cucm.gateway_detail', gw_id=gw.id) }}" class="btn btn-outline btn-sm">View</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No gateways found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
