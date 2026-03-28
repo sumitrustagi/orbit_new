@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark" data-orbit-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Orbit{% endblock %} — {{ config.get('APP_NAME','Orbit') }}</title>
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        crossorigin="anonymous"/>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <style>
+    /* ── CSS Variables — Dark (default) ─────────────────────────── */
+    :root,
+    [data-orbit-theme="dark"] {
+      --orbit-primary:       {{ config.get('PRIMARY_COLOR','#1E40AF') }};
+      --orbit-accent:        {{ config.get('ACCENT_COLOR','#3B82F6') }};
+
+      --orbit-bg:            #0f172a;
+      --orbit-bg-card:       #1e293b;
+      --orbit-bg-surface:    #334155;
+      --orbit-text:          #e2e8f0;
+      --orbit-text-muted:    #94a3b8;
+      --orbit-text-heading:  #f1f5f9;
+      --orbit-border:        rgba(255,255,255,0.07);
+      --orbit-border-subtle: rgba(255,255,255,0.04);
+
+      /* Sidebar */
+      --sb-bg:               #0f172a;
+      --sb-brand-border:     rgba(255,255,255,0.07);
+      --sb-text:             #94a3b8;
+      --sb-text-hover:       #e2e8f0;
+      --sb-hover-bg:         rgba(255,255,255,0.06);
+      --sb-active-bg:        rgba(59,130,246,0.18);
+      --sb-active-text:      #60a5fa;
+      --sb-section-label:    #475569;
+      --sb-icon:             #64748b;
+      --sb-badge-bg:         rgba(255,255,255,0.08);
+      --sb-footer-border:    rgba(255,255,255,0.07);
+      --sb-user-name:        #e2e8f0;
+      --sb-user-role:        #64748b;
+
+      /* Topbar */
+      --tb-bg:               #1e293b;
+      --tb-border:           rgba(255,255,255,0.06);
+      --tb-text:             #e2e8f0;
+      --tb-breadcrumb:       #94a3b8;
+
+      /* Content */
+      --content-bg:          #0f172a;
+      --card-bg:             #1e293b;
+      --card-border:         rgba(255,255,255,0.06);
+      --card-header-bg:      rgba(255,255,255,0.03);
+      --table-stripe:        rgba(255,255,255,0.02);
+      --table-hover:         rgba(255,255,255,0.04);
+      --stat-bg:             #1e293b;
+
+      /* Links */
+      --link-color:          #60a5fa;
+    }
+
+    /* ── CSS Variables — Light (day mode) ──────────────────────── */
+    [data-orbit-theme="light"] {
+      --orbit-bg:            #f1f5f9;
+      --orbit-bg-card:       #ffffff;
+      --orbit-bg-surface:    #e2e8f0;
+      --orbit-text:          #1e293b;
+      --orbit-text-muted:    #64748b;
+      --orbit-text-heading:  #0f172a;
+      --orbit-border:        #e2e8f0;
+      --orbit-border-subtle: #f1f5f9;
+
+      /* Sidebar */
+      --sb-bg:               #ffffff;
+      --sb-brand-border:     #e2e8f0;
+      --sb-text:             #64748b;
+      --sb-text-hover:       #1e293b;
+      --sb-hover-bg:         #f1f5f9;
+      --sb-active-bg:        #eff6ff;
+      --sb-active-text:      #1e40af;
+      --sb-section-label:    #94a3b8;
+      --sb-icon:             #94a3b8;
+      --sb-badge-bg:         #f1f5f9;
+      --sb-footer-border:    #e2e8f0;
+      --sb-user-name:        #1e293b;
+      --sb-user-role:        #64748b;
+
+      /* Topbar */
+      --tb-bg:               #ffffff;
+      --tb-border:           #e2e8f0;
+      --tb-text:             #1e293b;
+      --tb-breadcrumb:       #64748b;
+
+      /* Content */
+      --content-bg:          #f1f5f9;
+      --card-bg:             #ffffff;
+      --card-border:         #e2e8f0;
+      --card-header-bg:      #f8fafc;
+      --table-stripe:        #f8fafc;
+      --table-hover:         #f1f5f9;
+      --stat-bg:             #ffffff;
+
+      /* Links */
+      --link-color:          #1e40af;
+    }
+
+    /* ── Global Reset ──────────────────────────────────────────── */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', 'system-ui', -apple-system, sans-serif;
+      background: var(--content-bg);
+      color: var(--orbit-text);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--link-color); }
+
+    /* ── Layout Shell ──────────────────────────────────────────── */
+    .orbit-app {
+      display: flex;
+      min-height: 100vh;
+    }
+    .orbit-main {
+      flex: 1;
+      margin-left: 240px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    @media (max-width: 991px) {
+      .orbit-main { margin-left: 0; }
+    }
+
+    /* ── Top Bar ───────────────────────────────────────────────── */
+    .orbit-topbar {
+      height: 52px;
+      background: var(--tb-bg);
+      border-bottom: 1px solid var(--tb-border);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+      flex-shrink: 0;
+    }
+    .topbar-breadcrumb {
+      font-size: 0.82rem;
+      color: var(--tb-breadcrumb);
+      font-weight: 500;
+    }
+    .topbar-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--tb-text);
+    }
+    .topbar-actions { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; }
+
+    /* Mobile hamburger */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--orbit-text);
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    @media (max-width: 991px) {
+      .mobile-menu-btn { display: flex; }
+    }
+
+    /* ── Content Area ──────────────────────────────────────────── */
+    .orbit-content {
+      flex: 1;
+      padding: 1.5rem;
+      max-width: 1400px;
+      width: 100%;
+    }
+
+    /* ── Cards ──────────────────────────────────────────────────── */
+    .orbit-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .orbit-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--card-header-bg);
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.85rem;
+    }
+
+    /* ── Stat Widgets ──────────────────────────────────────────── */
+    .stat-widget {
+      background: var(--stat-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: box-shadow 0.2s;
+    }
+    .stat-widget:hover {
+      box-shadow: 0 4px 18px rgba(30,64,175,0.08);
+    }
+    .stat-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--orbit-text-heading);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--orbit-text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Tables ─────────────────────────────────────────────────── */
+    .orbit-table {
+      color: var(--orbit-text);
+    }
+    .orbit-table thead th {
+      background: var(--card-header-bg);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--orbit-text-muted);
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .orbit-table tbody td {
+      padding: 0.65rem 1rem;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.85rem;
+    }
+    .orbit-table tbody tr:hover {
+      background: var(--table-hover);
+    }
+
+    /* ── Flash Messages ────────────────────────────────────────── */
+    .orbit-flash-area {
+      padding: 0.75rem 1.5rem 0;
+    }
+
+    /* ── Theme Toggle Button ───────────────────────────────────── */
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.35rem 0.6rem;
+      color: var(--orbit-text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      line-height: 1;
+    }
+    .theme-toggle:hover {
+      color: var(--orbit-accent);
+      border-color: var(--orbit-accent);
+      background: var(--sb-hover-bg);
+    }
+    [data-orbit-theme="dark"] .theme-toggle .bi-sun-fill   { display: inline; }
+    [data-orbit-theme="dark"] .theme-toggle .bi-moon-fill  { display: none; }
+    [data-orbit-theme="light"] .theme-toggle .bi-sun-fill  { display: none; }
+    [data-orbit-theme="light"] .theme-toggle .bi-moon-fill { display: inline; }
+
+    /* ── Scrollbar (dark) ──────────────────────────────────────── */
+    [data-orbit-theme="dark"] ::-webkit-scrollbar { width: 6px; }
+    [data-orbit-theme="dark"] ::-webkit-scrollbar-thumb {
+      background: #334155; border-radius: 4px;
+    }
+    [data-orbit-theme="dark"] ::-webkit-scrollbar-track { background: transparent; }
+
+    /* ── Mobile overlay ────────────────────────────────────────── */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1035;
+    }
+    @media (max-width: 991px) {
+      .orbit-sidebar.open ~ .sidebar-overlay,
+      .sidebar-overlay.active { display: block; }
+    }
+  </style>
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+<div class="orbit-app">
+
+  <!-- Sidebar -->
+  {% include "admin/_sidebar.html" %}
+
+  <!-- Sidebar backdrop (mobile) -->
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Main -->
+  <div class="orbit-main">
+
+    <!-- Top Bar -->
+    <div class="orbit-topbar">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
+        <i class="bi bi-list"></i>
+      </button>
+
+      {% block breadcrumb %}{% endblock %}
+
+      <div class="topbar-actions">
+        {% block topbar_actions %}{% endblock %}
+
+        <!-- Day / Night Mode Toggle -->
+        <button class="theme-toggle"
+                onclick="toggleTheme()"
+                title="Toggle day / night mode"
+                aria-label="Toggle theme">
+          <i class="bi bi-sun-fill"></i>
+          <i class="bi bi-moon-fill"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    <div class="orbit-flash-area">
+      {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat }} alert-dismissible fade show py-2" role="alert">
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Page Content -->
+    <div class="orbit-content">
+      {% block content %}{% endblock %}
+    </div>
+
+  </div><!-- /orbit-main -->
+</div><!-- /orbit-app -->
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<!-- Alpine.js -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js"></script>
+
+<!-- Theme Toggle Script -->
+<script>
+(function() {
+  // Restore saved theme (runs immediately to avoid FOUC)
+  const saved = localStorage.getItem('orbit-theme') || 'dark';
+  applyTheme(saved);
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-orbit-theme', theme);
+    // Also set Bootstrap's theme attribute for component compatibility
+    document.documentElement.setAttribute('data-bs-theme', theme);
+  }
+
+  window.toggleTheme = function() {
+    const current = document.documentElement.getAttribute('data-orbit-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem('orbit-theme', next);
+  };
+})();
+</script>
+
+<!-- Sidebar Toggle Script -->
+<script>
+window.toggleSidebar = function() {
+  const sb = document.getElementById('orbitSidebar');
+  const ov = document.querySelector('.sidebar-overlay');
+  if (sb) sb.classList.toggle('open');
+  if (ov) ov.classList.toggle('active');
+};
+</script>
+
+<!-- Session Heartbeat -->
+<script>
+(function() {
+  const HEARTBEAT_MS  = 5 * 60 * 1000;
+  const TIMEOUT_MS    = 30 * 60 * 1000;
+  const WARN_BEFORE_S = 120;
+
+  let lastActivity = Date.now();
+  let warnShown    = false;
+
+  ['click','keydown','mousemove','scroll','touchstart'].forEach(evt =>
+    document.addEventListener(evt, () => { lastActivity = Date.now(); warnShown = false; }, true)
+  );
+
+  async function heartbeat() {
+    const csrfEl = document.querySelector('[name=csrf_token]') ||
+                   document.querySelector('meta[name=csrf-token]');
+    const token  = csrfEl ? (csrfEl.value || csrfEl.content || '') : '';
+    try {
+      await fetch('/auth/heartbeat', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': token }
+      });
+    } catch(e) { /* silent */ }
+  }
+
+  function checkTimeout() {
+    const idle = (Date.now() - lastActivity) / 1000;
+    const remaining = (TIMEOUT_MS / 1000) - idle;
+    if (remaining <= WARN_BEFORE_S && !warnShown) {
+      warnShown = true;
+      showTimeoutWarning(Math.ceil(remaining));
+    }
+  }
+
+  function showTimeoutWarning(secs) {
+    const existing = document.getElementById('orbit-timeout-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'orbit-timeout-toast';
+    toast.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;max-width:320px;';
+    toast.innerHTML = `
+      <div class="card shadow border-warning">
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-clock text-warning fs-5"></i>
+            <strong>Session Expiring</strong>
+          </div>
+          <p class="small text-muted mb-2">
+            Your session expires in <strong id="orbit-countdown">${secs}</strong> seconds.
+          </p>
+          <button onclick="fetch('/auth/heartbeat',{method:'POST'}).then(()=>document.getElementById('orbit-timeout-toast').remove())"
+                  class="btn btn-sm btn-warning w-100">Stay Signed In</button>
+        </div>
+      </div>`;
+    document.body.appendChild(toast);
+    const el = document.getElementById('orbit-countdown');
+    const iv = setInterval(() => {
+      secs = Math.max(0, secs - 1);
+      if (el) el.textContent = secs;
+      if (secs <= 0) {
+        clearInterval(iv);
+        window.location.href = '/auth/login?timeout=1';
+      }
+    }, 1000);
+  }
+
+  setInterval(heartbeat, HEARTBEAT_MS);
+  setInterval(checkTimeout, 10000);
+})();
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>
